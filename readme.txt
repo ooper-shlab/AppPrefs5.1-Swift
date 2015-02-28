@@ -2,6 +2,8 @@ AppPrefs
 
 Translated by OOPer in cooperation with shlab.jp, on 2015/2/11.
 
+Adapted to Swift 1.2 beta2 on 2015/3/1.
+
 Based on
 https://developer.apple.com/library/ios/samplecode/AppPrefs/Introduction/Intro.html#//apple_ref/doc/uid/DTS40007799
 2014-09-17.
@@ -14,7 +16,7 @@ REQUIREMENTS
 --------------------------------------------------------------------------------
 
 ### BUILD ###
-iOS 8.1 SDK, will not build on iOS 8.2 SDK or iOS 8.3 SDK
+Xcode 6.3 beta2, iOS SDK 8.3
 
 ### RUNTIME ###
 iOS 7.0 or later

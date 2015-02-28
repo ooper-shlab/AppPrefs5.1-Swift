@@ -2,7 +2,7 @@
 //  AppPrefsAppDelegate.swift
 //  AppPrefs
 //
-//  Created by 開発 on 2014/11/30.
+//  Translated by OOPer in cooperation with shlab.jp, on 2014/11/30.
 //
 //
 /*
@@ -24,7 +24,7 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
     var window: UIWindow?
     
     //| ----------------------------------------------------------------------------
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         // The registration domain is volatile.  It does not persist across launches.
         // You must register your defaults at each launch; otherwise you will get
         // (system) default values when accessing the values of preferences the
@@ -51,7 +51,7 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
         
         // appDefaults is now populated with the preferences and their default values.
         // Add these to the registration domain.
-        NSUserDefaults.standardUserDefaults().registerDefaults(appDefaults)
+        NSUserDefaults.standardUserDefaults().registerDefaults(appDefaults as [NSObject : AnyObject])
         NSUserDefaults.standardUserDefaults().synchronize()
     }
     
@@ -71,7 +71,7 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
         
         // The elements defined in a settings page are contained within an array
         // that is associated with the root-level PreferenceSpecifiers key.
-        let prefSpecifierArray = settingsDict["PreferenceSpecifiers"] as NSArray?
+        let prefSpecifierArray = settingsDict["PreferenceSpecifiers"] as! NSArray?
         
         // If prefSpecifierArray is nil, something wen't wrong.  Either the
         // specified plist does ot exist or is malformed.
@@ -82,15 +82,15 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
         // Create a dictionary to hold the parsed results.
         let keyValuePairs = NSMutableDictionary()
         
-        for prefItem in prefSpecifierArray as [NSDictionary] {
+        for prefItem in prefSpecifierArray as! [NSDictionary] {
             // Each element is itself a dictionary.
             // What kind of control is used to represent the preference element in the
             // Settings app.
-            let prefItemType = prefItem["Type"] as String
+            let prefItemType = prefItem["Type"] as! String
             // How this preference element maps to the defaults database for the app.
-            let prefItemKey = prefItem["Key"] as String?
+            let prefItemKey = prefItem["Key"] as! String?
             // The default value for the preference key.
-            let prefItemDefaultValue = prefItem["DefaultValue"] as NSObject?    //###
+            let prefItemDefaultValue = prefItem["DefaultValue"] as! NSObject?    //###
             
             if prefItemType == "PSChildPaneSpecifier" {
                 // If this is a 'Child Pane Element'.  That is, a reference to another
@@ -98,13 +98,13 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
                 // There must be a value associated with the 'File' key in this preference
                 // element's dictionary.  Its value is the name of the plist file in the
                 // Settings bundle for the referenced page.
-                let prefItemFile = prefItem["File"] as String
+                let prefItemFile = prefItem["File"] as! String
                 
                 // Recurs on the referenced page.
                 let childPageKeyValuePairs = self.loadDefaultsFromSettingsPage(prefItemFile, inSettingsBundleAtURL: settingsBundleURL)!
                 
                 // Add the results to our dictionary
-                keyValuePairs.addEntriesFromDictionary(childPageKeyValuePairs)
+                keyValuePairs.addEntriesFromDictionary(childPageKeyValuePairs as [NSObject : AnyObject])
             } else if prefItemKey != nil && prefItemDefaultValue != nil {
                 // Some elements, such as 'Group' or 'Text Field' elements do not contain
                 // a key and default value.  Skip those.

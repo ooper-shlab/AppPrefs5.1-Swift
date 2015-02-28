@@ -2,7 +2,7 @@
 //  RootViewController.swift
 //  AppPrefs
 //
-//  Created by 開発 on 2014/12/01.
+//  Translated by OOPer in cooperation with shlab.jp, on 2014/12/01.
 //
 //
 /*
@@ -117,8 +117,8 @@ class RootViewController: UITableViewController {
     func onDefaultsChanged(aNotification: NSNotification?) {
         let standardDefaults = NSUserDefaults.standardUserDefaults()
         
-        self.firstName = standardDefaults.objectForKey(kFirstNameKey) as String?
-        self.lastName = standardDefaults.objectForKey(kLastNameKey) as String?
+        self.firstName = standardDefaults.objectForKey(kFirstNameKey) as! String?
+        self.lastName = standardDefaults.objectForKey(kLastNameKey) as! String?
         
         // The value for the 'Text Color' setting is stored as an integer between
         // one and three inclusive.  Convert the integer into a UIColor object.
@@ -149,7 +149,7 @@ class RootViewController: UITableViewController {
     
     //| ----------------------------------------------------------------------------
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("NameCell") as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("NameCell") as! UITableViewCell
         
         cell.textLabel!.text = "\(self.firstName!) \(self.lastName!)"
         cell.textLabel!.textColor = self.nameColor
