@@ -51,7 +51,7 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
         
         // appDefaults is now populated with the preferences and their default values.
         // Add these to the registration domain.
-        NSUserDefaults.standardUserDefaults().registerDefaults(appDefaults as [NSObject : AnyObject])
+        NSUserDefaults.standardUserDefaults().registerDefaults(appDefaults as! [String : AnyObject])
         NSUserDefaults.standardUserDefaults().synchronize()
     }
     

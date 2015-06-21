@@ -14,7 +14,7 @@ REQUIREMENTS
 --------------------------------------------------------------------------------
 
 ### BUILD ###
-Xcode 6.3, iOS SDK 8.3
+Xcode 7 beta
 
 ### RUNTIME ###
 iOS 7.0 or later

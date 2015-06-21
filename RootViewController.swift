@@ -102,10 +102,14 @@ class RootViewController: UITableViewController {
     //! to the settings page for this app.
     //
     @IBAction func openApplicationSettings(AnyObject) {
-        // UIApplicationOpenSettingsURLString is only availiable in iOS 8 and above.
-        // The following code will crash if run on a prior version of iOS.  See the
-        // check in -viewDidLoad.
-        UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+        if #available(iOS 8.0, *) {
+            // UIApplicationOpenSettingsURLString is only availiable in iOS 8 and above.
+            // The following code will crash if run on a prior version of iOS.  See the
+            // check in -viewDidLoad.
+            UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     
@@ -149,7 +153,7 @@ class RootViewController: UITableViewController {
     
     //| ----------------------------------------------------------------------------
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("NameCell") as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("NameCell")!
         
         cell.textLabel!.text = "\(self.firstName!) \(self.lastName!)"
         cell.textLabel!.textColor = self.nameColor
