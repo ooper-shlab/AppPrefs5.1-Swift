@@ -91,7 +91,7 @@ class RootViewController: UITableViewController {
     //| ----------------------------------------------------------------------------
     //! Unwind action for the Done button on the Info screen.
     //
-    @IBAction func unwindFromInfoScreen(UIStoryboardSegue) {
+    @IBAction func unwindFromInfoScreen(_: UIStoryboardSegue) {
     }
     
     //MARK: -
@@ -101,7 +101,7 @@ class RootViewController: UITableViewController {
     //! Launches the Settings app.  The Settings app will automatically navigate to
     //! to the settings page for this app.
     //
-    @IBAction func openApplicationSettings(AnyObject) {
+    @IBAction func openApplicationSettings(_: AnyObject) {
         if #available(iOS 8.0, *) {
             // UIApplicationOpenSettingsURLString is only availiable in iOS 8 and above.
             // The following code will crash if run on a prior version of iOS.  See the
