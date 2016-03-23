@@ -73,7 +73,7 @@ class RootViewController: UITableViewController {
         // so, when we are resumed from the backround, this will give us a chance to
         // update our UI
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "onDefaultsChanged:",
+            selector: #selector(RootViewController.onDefaultsChanged(_:)),
             name: NSUserDefaultsDidChangeNotification,
             object: nil)
     }
