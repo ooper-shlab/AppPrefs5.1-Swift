@@ -24,7 +24,7 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
     var window: UIWindow?
     
     //| ----------------------------------------------------------------------------
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         // The registration domain is volatile.  It does not persist across launches.
         // You must register your defaults at each launch; otherwise you will get
         // (system) default values when accessing the values of preferences the
@@ -43,16 +43,16 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
     //! and registers the loaded values as the app's defaults.
     //
     func populateRegistrationDomain() {
-        let settingsBundleURL = NSBundle.mainBundle().URLForResource("Settings", withExtension: "bundle")!
+        let settingsBundleURL = Bundle.main.url(forResource: "Settings", withExtension: "bundle")!
         
         // Invoke loadDefaultsFromSettingsPage:inSettingsBundleAtURL: on the property
         // list file for the root settings page (always named Root.plist).
-        let appDefaults = self.loadDefaultsFromSettingsPage("Root.plist", inSettingsBundleAtURL: settingsBundleURL)!
+        let appDefaults = self.loadDefaultsFromSettingsPage("Root.plist", inSettingsBundleAt: settingsBundleURL)!
         
         // appDefaults is now populated with the preferences and their default values.
         // Add these to the registration domain.
-        NSUserDefaults.standardUserDefaults().registerDefaults(appDefaults as! [String : AnyObject])
-        NSUserDefaults.standardUserDefaults().synchronize()
+        UserDefaults.standard.register(defaults: appDefaults)
+        UserDefaults.standard.synchronize()
     }
     
     
@@ -61,28 +61,27 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
     //! defined within along with its default value.  If the page contains a
     //! 'Child Pane Element', this method will recurs on the referenced page file.
     //
-    func loadDefaultsFromSettingsPage(plistName: String, inSettingsBundleAtURL settingsBundleURL: NSURL) -> NSDictionary? {
+    func loadDefaultsFromSettingsPage(_ plistName: String, inSettingsBundleAt settingsBundleURL: NSURL) -> [String: AnyObject]? {
         // Each page of settings is represented by a property-list file that follows
         // the Settings Application Schema:
         // <https://developer.apple.com/library/ios/#documentation/PreferenceSettings/Conceptual/SettingsApplicationSchemaReference/Introduction/Introduction.html>.
         
         // Create an NSDictionary from the plist file.
-        let settingsDict = NSDictionary(contentsOfURL: settingsBundleURL.URLByAppendingPathComponent(plistName))!
+        let settingsDict = NSDictionary(contentsOf: settingsBundleURL.appendingPathComponent(plistName)!)!
         
         // The elements defined in a settings page are contained within an array
         // that is associated with the root-level PreferenceSpecifiers key.
-        let prefSpecifierArray = settingsDict["PreferenceSpecifiers"] as! NSArray?
+        guard let prefSpecifierArray = settingsDict["PreferenceSpecifiers"] as? [[String: AnyObject]] else {
         
         // If prefSpecifierArray is nil, something wen't wrong.  Either the
         // specified plist does ot exist or is malformed.
-        if prefSpecifierArray == nil {
             return nil
         }
         
         // Create a dictionary to hold the parsed results.
-        let keyValuePairs = NSMutableDictionary()
+        var keyValuePairs: [String: AnyObject] = [:]
         
-        for prefItem in prefSpecifierArray as! [NSDictionary] {
+        for prefItem in prefSpecifierArray {
             // Each element is itself a dictionary.
             // What kind of control is used to represent the preference element in the
             // Settings app.
@@ -90,7 +89,7 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
             // How this preference element maps to the defaults database for the app.
             let prefItemKey = prefItem["Key"] as! String?
             // The default value for the preference key.
-            let prefItemDefaultValue = prefItem["DefaultValue"] as! NSObject?    //###
+            let prefItemDefaultValue = prefItem["DefaultValue"]
             
             if prefItemType == "PSChildPaneSpecifier" {
                 // If this is a 'Child Pane Element'.  That is, a reference to another
@@ -101,18 +100,26 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
                 let prefItemFile = prefItem["File"] as! String
                 
                 // Recurs on the referenced page.
-                let childPageKeyValuePairs = self.loadDefaultsFromSettingsPage(prefItemFile, inSettingsBundleAtURL: settingsBundleURL)!
+                let childPageKeyValuePairs = self.loadDefaultsFromSettingsPage(prefItemFile, inSettingsBundleAt: settingsBundleURL)!
                 
                 // Add the results to our dictionary
-                keyValuePairs.addEntriesFromDictionary(childPageKeyValuePairs as [NSObject : AnyObject])
-            } else if prefItemKey != nil && prefItemDefaultValue != nil {
+                keyValuePairs.addEntries(from: childPageKeyValuePairs)
+            } else if let prefItemKey = prefItemKey, let prefItemDefaultValue = prefItemDefaultValue {
                 // Some elements, such as 'Group' or 'Text Field' elements do not contain
                 // a key and default value.  Skip those.
-                keyValuePairs[prefItemKey!] = prefItemDefaultValue
+                keyValuePairs[prefItemKey] = prefItemDefaultValue
             }
         }
         
         return keyValuePairs
     }
     
+}
+
+extension Dictionary {
+    mutating func addEntries(from otherDictionary: [Key: Value]) {
+        for (key, value) in otherDictionary {
+            self[key] = value
+        }
+    }
 }

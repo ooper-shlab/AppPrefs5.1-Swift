@@ -60,7 +60,7 @@ class RootViewController: UITableViewController {
     
     
     //| ----------------------------------------------------------------------------
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Load our preferences.  Preloading the relevant preferences here will
@@ -72,19 +72,19 @@ class RootViewController: UITableViewController {
         // Begin listening for changes to our preferences when the Settings app does
         // so, when we are resumed from the backround, this will give us a chance to
         // update our UI
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(RootViewController.onDefaultsChanged(_:)),
-            name: NSUserDefaultsDidChangeNotification,
+            name: UserDefaults.didChangeNotification,
             object: nil)
     }
     
     
     //| ----------------------------------------------------------------------------
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         // Stop listening for the NSUserDefaultsDidChangeNotification
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UserDefaults.didChangeNotification, object: nil)
     }
     
     
@@ -106,7 +106,7 @@ class RootViewController: UITableViewController {
             // UIApplicationOpenSettingsURLString is only availiable in iOS 8 and above.
             // The following code will crash if run on a prior version of iOS.  See the
             // check in -viewDidLoad.
-            UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+            UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
         } else {
             // Fallback on earlier versions
         }
@@ -118,25 +118,25 @@ class RootViewController: UITableViewController {
     //  from the defaults database into the holding properies, then asks the
     //  tableView to reload itself.
     //
-    func onDefaultsChanged(aNotification: NSNotification?) {
-        let standardDefaults = NSUserDefaults.standardUserDefaults()
+    func onDefaultsChanged(_ aNotification: NSNotification?) {
+        let standardDefaults = UserDefaults.standard
         
-        self.firstName = standardDefaults.objectForKey(kFirstNameKey) as! String?
-        self.lastName = standardDefaults.objectForKey(kLastNameKey) as! String?
+        self.firstName = standardDefaults.object(forKey: kFirstNameKey) as! String?
+        self.lastName = standardDefaults.object(forKey: kLastNameKey) as! String?
         
         // The value for the 'Text Color' setting is stored as an integer between
         // one and three inclusive.  Convert the integer into a UIColor object.
-        if let textColor = TextColor(rawValue: standardDefaults.integerForKey(kNameColorKey)) {
+        if let textColor = TextColor(rawValue: standardDefaults.integer(forKey: kNameColorKey)) {
             switch textColor {
             case .blue:
-                self.nameColor = UIColor.blueColor()
+                self.nameColor = UIColor.blue
             case .red:
-                self.nameColor = UIColor.redColor()
+                self.nameColor = UIColor.red
             case .green:
-                self.nameColor = UIColor.greenColor()
+                self.nameColor = UIColor.green
             }
         } else {
-            assert(false, "Got an unexpected value \(standardDefaults.integerForKey(kNameColorKey)) for \(kNameColorKey)")
+            assert(false, "Got an unexpected value \(standardDefaults.integer(forKey: kNameColorKey)) for \(kNameColorKey)")
         }
         
         self.tableView.reloadData()
@@ -146,14 +146,14 @@ class RootViewController: UITableViewController {
     //MARK: UITableViewDataSource
     
     //| ----------------------------------------------------------------------------
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
     
     //| ----------------------------------------------------------------------------
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("NameCell")!
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "NameCell")!
         
         cell.textLabel!.text = "\(self.firstName!) \(self.lastName!)"
         cell.textLabel!.textColor = self.nameColor

@@ -14,7 +14,7 @@ REQUIREMENTS
 --------------------------------------------------------------------------------
 
 ### BUILD ###
-Xcode 7 beta
+Xcode 8 beta 5
 
 ### RUNTIME ###
 iOS 7.0 or later
