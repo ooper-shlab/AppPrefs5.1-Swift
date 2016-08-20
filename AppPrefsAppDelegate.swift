@@ -24,7 +24,7 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
     var window: UIWindow?
     
     //| ----------------------------------------------------------------------------
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         // The registration domain is volatile.  It does not persist across launches.
         // You must register your defaults at each launch; otherwise you will get
         // (system) default values when accessing the values of preferences the
@@ -61,13 +61,13 @@ class AppPrefsAppDelegate : NSObject, UIApplicationDelegate {
     //! defined within along with its default value.  If the page contains a
     //! 'Child Pane Element', this method will recurs on the referenced page file.
     //
-    func loadDefaultsFromSettingsPage(_ plistName: String, inSettingsBundleAt settingsBundleURL: NSURL) -> [String: AnyObject]? {
+    func loadDefaultsFromSettingsPage(_ plistName: String, inSettingsBundleAt settingsBundleURL: URL) -> [String: AnyObject]? {
         // Each page of settings is represented by a property-list file that follows
         // the Settings Application Schema:
         // <https://developer.apple.com/library/ios/#documentation/PreferenceSettings/Conceptual/SettingsApplicationSchemaReference/Introduction/Introduction.html>.
         
         // Create an NSDictionary from the plist file.
-        let settingsDict = NSDictionary(contentsOf: settingsBundleURL.appendingPathComponent(plistName)!)!
+        let settingsDict = NSDictionary(contentsOf: settingsBundleURL.appendingPathComponent(plistName))!
         
         // The elements defined in a settings page are contained within an array
         // that is associated with the root-level PreferenceSpecifiers key.

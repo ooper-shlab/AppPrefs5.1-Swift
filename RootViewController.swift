@@ -52,10 +52,11 @@ class RootViewController: UITableViewController {
         // UIApplicationOpenSettingsURLString is not present, we're running on an
         // old version of iOS.  Remove the Settings button from the navigation bar
         // since it won't be able to do anything.
-        let RTLD_DEFAULT = UnsafeMutablePointer<Void>(bitPattern: -2)
-        if dlsym(RTLD_DEFAULT, "UIApplicationOpenSettingsURLString") == nil {
-            self.navigationItem.leftBarButtonItem = nil
-        }
+        //###This translated sample code now supports only iOS 8 or later
+//        let RTLD_DEFAULT = UnsafeMutableRawPointer(bitPattern: -2)
+//        if dlsym(RTLD_DEFAULT, "UIApplicationOpenSettingsURLString") == nil {
+//            self.navigationItem.leftBarButtonItem = nil
+//        }
     }
     
     
