@@ -119,7 +119,7 @@ class RootViewController: UITableViewController {
     //  from the defaults database into the holding properies, then asks the
     //  tableView to reload itself.
     //
-    func onDefaultsChanged(_ aNotification: NSNotification?) {
+    @objc func onDefaultsChanged(_ aNotification: NSNotification?) {
         let standardDefaults = UserDefaults.standard
         
         self.firstName = standardDefaults.object(forKey: kFirstNameKey) as! String?
